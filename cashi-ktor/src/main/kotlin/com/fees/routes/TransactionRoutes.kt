@@ -14,18 +14,37 @@ import io.ktor.client.statement.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.http.*
+import io.ktor.server.config.*
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
 fun Route.transactionRouting(environment: ApplicationEnvironment) {
 
     route("/transaction") {
+        post("/calculate-fee") {
+            call.respond(TransactionResponse(
+                "1", 100.0, "", "",3.0, 3.0, ""
+            ))
+        }
+         post("/charge-fee") {
+             call.respond(TransactionResponse(
+                 "1", 100.0, "", "",3.0, 3.0, ""
+             ))
+        }
+         post("/record-fee") {
+             call.respond(TransactionResponse(
+                 "1", 100.0, "", "",3.0, 3.0, ""
+             ))
+        }
         post("/fee") {
+            
             val transactionRequest = call.receive<TransactionRequest>()
-            val currentDateTime = LocalDateTime.now().minusMinutes(1)
+            val currentDateTime = LocalDateTime.now(ZoneId.of("UTC")).plusMinutes(1)
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            val logicalDate =  currentDateTime.format(formatter)
+            val logicalDate = currentDateTime.format(formatter)
             // Convert transactionRequest to JSON string
             val jsonBody = """
                     {
@@ -34,8 +53,7 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
                         "amount": ${transactionRequest.amount},    
                         "type": "${transactionRequest.type}"
                        },
-                       "logical_date": "$logicalDate" ,
-                       "dag_run_id" :"8888"
+                       "logical_date": "$logicalDate"
                     }
                 """.trimIndent()
 
@@ -66,8 +84,11 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
             }
 
             if (response != null && response.status.isSuccess()) {
-                val responseBody = response.body<TransactionResponse>()
-                call.respond(responseBody)
+//                val responseBody = response.body<TransactionResponse>()
+//                call.respond(responseBody)
+                call.respond(TransactionResponse(
+                    "1", 100.0, "", "",3.0, 3.0, ""
+                ))
             } else {
                 call.respond(HttpStatusCode.InternalServerError, "Error triggering DAG: ${response?.status?.value} - ${response?.toString()}")
             }

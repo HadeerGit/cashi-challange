@@ -1,5 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.22"
+    id("io.ktor.plugin") version "2.3.7"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
     application
 }
 
@@ -11,6 +13,10 @@ repositories {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
+    implementation("io.ktor:ktor-server-netty-jvm")
     testImplementation(kotlin("test"))
 }
 

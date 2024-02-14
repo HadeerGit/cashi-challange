@@ -23,3 +23,6 @@ RUN chmod +x /usr/lib/jvm/java-11-openjdk-amd64/bin/java
 # Switch back to the airflow user
 USER airflow
 
+
+
+

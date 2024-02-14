@@ -1,10 +1,9 @@
 fun main(args: Array<String>) {
-    calculateFee(args[0], args[1])
+    val amount = args[0].trim().toDouble()
+    calculateFee(amount,  args[1])
 }
 
-fun calculateFee(amount: String, asset: String): Double {
-    print(amount)
-    print(asset)
-    // Fee calculation logic based on amount and asset
-    return 0.0 // Example fee calculation
+fun calculateFee(amount: Double, type: String): Double {
+
+    return amount * 0.0015
 }
