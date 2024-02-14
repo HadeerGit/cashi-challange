@@ -7,6 +7,25 @@ This project implements a RESTful API for a fees workflow using Kotlin services 
 1. Clone the repository.
 2. Install dependencies using `gradle build`.
 3. Run the application using `gradle run`.
+4. mkdir ./logs
+5. Run docker compose up
+6. go to browser and open airflow on http://localhost:8080
+7.  To create an HTTP connection:
+
+    Navigate to the Airflow UI.
+
+    Click on the Admin menu and select Connections .
+
+    Click on the + button to create a new connection.
+
+    Set the Conn Id to a unique identifier (e.g., http_default ).
+
+    Choose HTTP as the connection type.
+
+    Enter the base URL for your API or web service in the Host field.
+
+    Provide any additional information required for authentication, such as username, password, or API key.
+![img.png](img.png)
 
 ## Usage
 - Endpoint: `/transaction/fee`
@@ -33,9 +52,4 @@ This project implements a RESTful API for a fees workflow using Kotlin services 
 "description": "Standard fee rate of 0.15%",
 }
 
-
-services build
-cd services
-kotlinc fees-calculator/src/main/kotlin/Main.kt -include-runtime -d ./builds/fees-calculator.jar
-kotlinc fees-charger/src/main/kotlin/Main.kt -include-runtime -d ./builds/fees-charger.jar
-kotlinc fees-recorder/src/main/kotlin/Main.kt -include-runtime -d ./builds/fees-recorder.jar
+  

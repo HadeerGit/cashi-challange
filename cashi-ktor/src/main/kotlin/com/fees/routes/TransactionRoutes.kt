@@ -1,23 +1,23 @@
 package com.fees.routes
 
+import com.fees.requests.ChargeFeeRequest
+import com.fees.requests.RecordFeeRequest
 import com.fees.requests.TransactionRequest
-import com.fees.responses.TransactionResponse
+import com.fees.responses.FeeResponse
+import com.fees.services.CalculateFeeService
+import com.fees.services.ChargeFeeService
+import com.fees.services.RecordFeeService
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
-import io.ktor.http.*
-import io.ktor.server.config.*
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
@@ -25,20 +25,17 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
 
     route("/transaction") {
         post("/calculate-fee") {
-            call.respond(TransactionResponse(
-                "1", 100.0, "", "",3.0, 3.0, ""
-            ))
+            val transactionRequest = call.receive<TransactionRequest>()
+            call.respond(CalculateFeeService.calculateFee(transactionRequest.transaction_id, transactionRequest.type, transactionRequest.amount))
         }
          post("/charge-fee") {
-             call.respond(TransactionResponse(
-                 "1", 100.0, "", "",3.0, 3.0, ""
-             ))
-        }
-         post("/record-fee") {
-             call.respond(TransactionResponse(
-                 "1", 100.0, "", "",3.0, 3.0, ""
-             ))
-        }
+             val request = call.receive<ChargeFeeRequest>()
+             call.respond(ChargeFeeService.chargeFee(request.transaction_id,request.fee))
+         }
+         put("/record-fee") {
+             val request = call.receive<RecordFeeRequest>()
+             call.respond(RecordFeeService.recordFee(request.transaction_id, request.fee))
+         }
         post("/fee") {
             
             val transactionRequest = call.receive<TransactionRequest>()
@@ -61,7 +58,8 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
             val serverUri = environment.config.propertyOrNull("ktor.airflow.serverUri")?.getString()
             val username = environment.config.propertyOrNull("ktor.airflow.username")?.getString()
             val password = environment.config.propertyOrNull("ktor.airflow.password")?.getString()
-            val airflowUrl = "$serverUri/api/v1/dags/fee_workflow/dagRuns"
+            val workflow = environment.config.propertyOrNull("ktor.airflow.workflow")?.getString()
+            val airflowUrl = "$serverUri/api/v1/dags/$workflow/dagRuns"
             val client = HttpClient {
                 install(Auth) {
                     basic {
@@ -84,9 +82,10 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
             }
 
             if (response != null && response.status.isSuccess()) {
+                call.respond(response.toString())
 //                val responseBody = response.body<TransactionResponse>()
 //                call.respond(responseBody)
-                call.respond(TransactionResponse(
+                call.respond(FeeResponse(
                     "1", 100.0, "", "",3.0, 3.0, ""
                 ))
             } else {
