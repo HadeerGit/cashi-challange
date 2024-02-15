@@ -1,11 +1,16 @@
 package com.fees.models
 
-import java.math.BigDecimal
-
+import org.jetbrains.exposed.sql.*
 data class FeeType(val id: Int,
-                       val rate: BigDecimal,
+                       val rate: Double,
                        val description: String,
                        val type: String
                        )
 
-val feeTypeStorage = mutableListOf<FeeType>()
+object FeeTypes : Table() {
+    val id = integer("id").autoIncrement()
+    val rate = integer("amount")
+    val description = varchar("description", 255)
+    val type = varchar("type", length = 50)
+    override val primaryKey = PrimaryKey(id)
+}
