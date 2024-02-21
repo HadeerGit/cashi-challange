@@ -8,6 +8,8 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
 import java.util.*
 import org.jetbrains.exposed.sql.Database
+import com.fees.dao.*
+
 fun initConfig() {
     ConfigFactory.defaultApplication()
 }
@@ -33,6 +35,7 @@ fun Application.module() {
 //    initConfig()
 //    dbMigrate()
 //    initDB()
+    DatabaseSingleton.init()
     configureSerialization()
     configureRouting(environment)
 }

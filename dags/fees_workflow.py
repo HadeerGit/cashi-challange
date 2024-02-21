@@ -49,15 +49,16 @@ def record_fee(**kwargs):
     conf['fee'] = kwargs['ti'].xcom_pull(task_ids='calculate_fee', key='fee')
 
 # Make HTTP request to record_transaction endpoint in Ktor
-    response = requests.put(
+    response = requests.post(
         'http://host.docker.internal:8070/transaction/record-fee',
          json = conf
     )
+    return conf
     if response.status_code == 200:
         return response.json()
     else:
         # Handle error case here
-        return {"error": "Failed to calculate fee"}
+        return {"error": "Failed to record fee"}
 
 
 default_args = {

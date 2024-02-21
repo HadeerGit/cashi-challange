@@ -32,7 +32,7 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
              val request = call.receive<ChargeFeeRequest>()
              call.respond(ChargeFeeService.chargeFee(request.transaction_id,request.fee))
          }
-         put("/record-fee") {
+         post("/record-fee") {
              val request = call.receive<RecordFeeRequest>()
              call.respond(RecordFeeService.recordFee(request.transaction_id, request.fee))
          }
@@ -50,7 +50,7 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
                         "amount": ${transactionRequest.amount},    
                         "type": "${transactionRequest.type}"
                        },
-                       "logical_date": "$logicalDate"
+                       "dag_run_id": "888"
                     }
                 """.trimIndent()
 
@@ -83,11 +83,6 @@ fun Route.transactionRouting(environment: ApplicationEnvironment) {
 
             if (response != null && response.status.isSuccess()) {
                 call.respond(response.toString())
-//                val responseBody = response.body<TransactionResponse>()
-//                call.respond(responseBody)
-                call.respond(FeeResponse(
-                    "1", 100.0, "", "",3.0, 3.0, ""
-                ))
             } else {
                 call.respond(HttpStatusCode.InternalServerError, "Error triggering DAG: ${response?.status?.value} - ${response?.toString()}")
             }

@@ -4,10 +4,10 @@
 This project implements a RESTful API for a fees workflow using Kotlin services to calculate, charge, and record fees for transactions submitted to the public API endpoint. The workflow is orchestrated using Apache Airflow.
 
 ## Installation
-1. Clone the repository.
-2. Install dependencies using `gradle build`.
-3. Run the application using `gradle run`.
-4. mkdir ./logs
+1. Clone the repository and got to cahsi-ktor.
+2. Install dependencies using `./gradlew build`.
+3. Run the application using `./gradlew run`.
+4. go back to repo and run mkdir ./logs
 5. Run docker compose up
 6. go to browser and open airflow on http://localhost:8080
 7.  To create an HTTP connection:
